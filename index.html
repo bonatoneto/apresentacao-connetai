@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conectaí — Pitch Deck</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#08080F;
+  --surface:#111120;
+  --surface2:#18182A;
+  --border:#252540;
+  --purple:#7C3AED;
+  --purple-l:#A78BFA;
+  --purple-ll:#C4B5FD;
+  --pink:#EC4899;
+  --pink-l:#F9A8D4;
+  --amber:#F59E0B;
+  --amber-l:#FCD34D;
+  --green:#10B981;
+  --green-l:#6EE7B7;
+  --text:#F1F5F9;
+  --text-m:#94A3B8;
+  --text-d:#475569;
+  --red:#EF4444;
+}
+
+html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased}
+
+/* ── PROGRESS BAR ── */
+#pbar{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--purple),var(--pink),var(--amber));transition:width .45s cubic-bezier(.4,0,.2,1);z-index:200}
+
+/* ── COUNTER ── */
+#counter{position:fixed;bottom:20px;right:28px;font-family:'Space Grotesk',sans-serif;font-size:11px;letter-spacing:.12em;color:var(--text-d);z-index:200}
+
+/* ── NAV BUTTONS ── */
+.nav{position:fixed;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.25);color:var(--purple-l);cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:200;transition:background .2s,border-color .2s;font-size:16px;user-select:none}
+.nav:hover{background:rgba(124,58,237,.25);border-color:var(--purple)}
+.nav:disabled{opacity:.2;cursor:default;pointer-events:none}
+#prev{left:16px}#next{right:16px}
+
+/* ── SLIDE WRAPPER ── */
+#deck{position:relative;width:100%;height:100%}
+
+/* ── INDIVIDUAL SLIDE ── */
+.s{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  padding:56px 90px;
+  opacity:0;
+  transform:translateX(50px);
+  transition:opacity .45s ease, transform .45s ease;
+  pointer-events:none;
+  overflow:hidden;
+}
+.s.on{opacity:1;transform:translateX(0);pointer-events:all}
+.s.out{opacity:0;transform:translateX(-50px)}
+
+/* ── DOT GRID ── */
+.dots{position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.035) 1px,transparent 1px);background-size:30px 30px;pointer-events:none;z-index:0}
+
+/* ── GLOW BLOBS ── */
+.glow{position:absolute;border-radius:50%;pointer-events:none;z-index:0}
+.gp{background:var(--purple);filter:blur(90px);opacity:.09}
+.gk{background:var(--pink);filter:blur(80px);opacity:.08}
+.ga{background:var(--amber);filter:blur(70px);opacity:.08}
+
+/* ── RADAR DOTS ── */
+@keyframes rp{0%{transform:scale(.7);opacity:.9}100%{transform:scale(3);opacity:0}}
+.rdot{position:absolute;border-radius:50%;z-index:1}
+.rdot .c{width:8px;height:8px;border-radius:50%;background:var(--purple);position:absolute}
+.rdot .r{width:8px;height:8px;border-radius:50%;border:1.5px solid var(--purple);position:absolute;animation:rp 2.2s ease-out infinite}
+.rdot .r2{animation-delay:.8s}
+
+/* ── CONTENT ── */
+.box{width:100%;max-width:920px;position:relative;z-index:2}
+.center{text-align:center}
+.center .box{margin:auto}
+
+/* ── EYEBROW ── */
+.eye{font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--purple-l);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.eye::before{content:'';display:inline-block;width:20px;height:1.5px;background:var(--purple);border-radius:2px}
+.center .eye{justify-content:center}
+.center .eye::before{display:none}
+
+/* ── HEADLINES ── */
+.h1{font-family:'Space Grotesk',sans-serif;font-weight:800;line-height:1.08;letter-spacing:-1.5px;font-size:clamp(46px,6.5vw,80px)}
+.h2{font-family:'Space Grotesk',sans-serif;font-weight:700;line-height:1.1;letter-spacing:-1px;font-size:clamp(32px,4.5vw,54px)}
+.h3{font-family:'Space Grotesk',sans-serif;font-weight:700;line-height:1.15;letter-spacing:-.5px;font-size:clamp(26px,3.5vw,40px)}
+.grad{background:linear-gradient(130deg,var(--purple-ll) 0%,var(--pink) 50%,var(--amber-l) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.grad-ap{background:linear-gradient(130deg,var(--amber-l) 0%,var(--pink) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* ── BODY TEXT ── */
+.body{font-size:16px;line-height:1.75;color:var(--text-m);margin-top:16px}
+.body b{color:var(--text);font-weight:600}
+
+/* ── CARDS ── */
+.cards2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:28px}
+.cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:28px}
+.cards4{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:26px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px 24px;transition:border-color .2s}
+.card:hover{border-color:rgba(124,58,237,.35)}
+.cico{font-size:26px;margin-bottom:11px;display:block}
+.ctit{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;color:var(--text);margin-bottom:7px}
+.cbod{font-size:13px;color:var(--text-m);line-height:1.6}
+.cp{border-color:rgba(124,58,237,.35)}
+.ck{border-color:rgba(236,72,153,.35)}
+.ca{border-color:rgba(245,158,11,.3)}
+.cg{border-color:rgba(16,185,129,.3)}
+
+/* ── FEATURE BARS ── */
+.fbar{display:flex;align-items:center;gap:14px;padding:13px 18px;background:var(--surface);border:1px solid var(--border);border-radius:11px;margin-bottom:10px;transition:border-color .2s}
+.fbar:hover{border-color:rgba(124,58,237,.35)}
+.fbar .fi{font-size:20px;flex-shrink:0}
+.fbar .ft{font-size:15px;color:var(--text-m);line-height:1.45}
+.fbar .ft b{color:var(--text);font-weight:600}
+
+/* ── BIG STAT ── */
+.bstat{font-family:'Space Grotesk',sans-serif;font-size:clamp(68px,10vw,120px);font-weight:800;line-height:1}
+
+/* ── TWO COL ── */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:center;margin-top:24px}
+
+/* ── PLAN CARDS ── */
+.plan{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:28px}
+.plan.pro{background:linear-gradient(140deg,rgba(124,58,237,.13),rgba(236,72,153,.07));border-color:rgba(124,58,237,.45)}
+.ptit{font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;margin-bottom:6px}
+.pprice{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:800;color:var(--purple-l);margin-bottom:22px}
+.pfeat{list-style:none;display:flex;flex-direction:column;gap:10px}
+.pfeat li{font-size:13.5px;color:var(--text-m);display:flex;align-items:flex-start;gap:10px;line-height:1.45}
+.pfeat li b{color:var(--text);font-weight:600}
+.pfeat li span{flex-shrink:0;margin-top:1px}
+
+/* ── COMPARE TABLE ── */
+.ctable{width:100%;border-collapse:collapse;margin-top:24px;font-size:13.5px}
+.ctable th{font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:600;padding:10px 14px;text-align:left;color:var(--text-d);border-bottom:1px solid var(--border);letter-spacing:.04em}
+.ctable th.hl{color:var(--purple-ll)}
+.ctable td{padding:10px 14px;border-bottom:1px solid rgba(37,37,64,.6);color:var(--text-m)}
+.ctable td.hl{background:rgba(124,58,237,.07);color:var(--text);font-weight:500}
+.ctable tr:last-child td{border-bottom:none}
+.ck2{color:var(--green-l);font-weight:600}
+.cx{color:var(--text-d)}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;padding:4px 11px;border-radius:100px;font-size:11.5px;font-weight:600;font-family:'Space Grotesk',sans-serif;letter-spacing:.04em}
+.bdp{background:rgba(124,58,237,.18);color:var(--purple-l);border:1px solid rgba(124,58,237,.28)}
+.bda{background:rgba(245,158,11,.14);color:var(--amber-l);border:1px solid rgba(245,158,11,.25)}
+.bdg{background:rgba(16,185,129,.14);color:var(--green-l);border:1px solid rgba(16,185,129,.25)}
+.bdk{background:rgba(236,72,153,.14);color:var(--pink-l);border:1px solid rgba(236,72,153,.25)}
+
+/* ── DIVIDER ── */
+.div{height:1px;background:var(--border);margin:22px 0}
+
+/* ── QUOTE ── */
+.qblock{border-left:3px solid var(--purple);padding-left:22px;margin:24px 0}
+.qblock p{font-family:'Space Grotesk',sans-serif;font-size:clamp(20px,2.8vw,32px);font-weight:700;line-height:1.3;color:var(--text)}
+
+/* ── ROADMAP ── */
+.road{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:22px}
+.ri{display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid var(--border)}
+.ri:nth-child(odd){padding-right:20px}
+.ri:nth-child(even){padding-left:20px;border-left:1px solid var(--border)}
+.ri:nth-child(3),.ri:nth-child(4){border-bottom:none}
+.ricon{width:38px;height:38px;border-radius:10px;background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.28);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.ritit{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;margin-bottom:3px}
+.risub{font-size:12px;color:var(--text-d);line-height:1.5}
+
+/* ── COVER SPECIFICS ── */
+.cover-name{font-family:'Space Grotesk',sans-serif;font-size:clamp(70px,10vw,108px);font-weight:800;letter-spacing:-3px;line-height:1;background:linear-gradient(130deg,var(--purple-l) 0%,var(--pink) 45%,var(--amber) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cover-sub{font-size:18px;color:var(--text-m);margin-top:14px;font-weight:400;max-width:480px}
+.cover-badges{display:flex;gap:9px;margin-top:28px;flex-wrap:wrap}
+.team{position:absolute;bottom:36px;left:90px;font-size:11px;color:var(--text-d);line-height:2;z-index:3}
+
+/* ── STAT ITEMS ── */
+.stat-items{display:flex;flex-direction:column;gap:14px}
+.si{background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:18px 22px}
+.si .si-ico{font-size:22px;margin-bottom:8px;display:block}
+.si .si-tit{font-family:'Space Grotesk',sans-serif;font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:5px}
+.si .si-bod{font-size:12.5px;color:var(--text-m);line-height:1.55}
+
+/* ── TECH BADGES ROW ── */
+.tbadges{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}
+
+/* ── SOLUTION LOGO ── */
+.sol-wrap{text-align:center;padding:0 0 20px}
+</style>
+</head>
+<body>
+
+<div id="pbar"></div>
+<div id="counter">1 / 12</div>
+<button class="nav" id="prev" onclick="go(-1)">&#8592;</button>
+<button class="nav" id="next" onclick="go(1)">&#8594;</button>
+
+<div id="deck">
+
+<!-- ─── SLIDE 1: COVER ─── -->
+<div class="s on" data-n="1">
+  <div class="dots"></div>
+  <div class="glow gp" style="width:500px;height:500px;top:-180px;left:-120px"></div>
+  <div class="glow gk" style="width:350px;height:350px;bottom:-80px;right:60px"></div>
+  <!-- Radar pins -->
+  <div class="rdot" style="top:22%;right:14%"><div class="c"></div><div class="r"></div><div class="r r2"></div></div>
+  <div class="rdot" style="top:58%;right:28%"><div class="c" style="background:var(--pink)"></div><div class="r" style="border-color:var(--pink)"></div></div>
+  <div class="rdot" style="top:68%;left:14%"><div class="c" style="background:var(--amber)"></div><div class="r" style="border-color:var(--amber);animation-delay:.5s"></div></div>
+  <div class="box" style="z-index:2">
+    <div class="cover-name">Conectaí</div>
+    <div class="cover-sub">A rede social de eventos para a Geração Z brasileira</div>
+    <div class="cover-badges">
+      <span class="badge bdp">📍 Geolocalização em tempo real</span>
+      <span class="badge bda">👥 Rede Social</span>
+      <span class="badge bdg">📱 Mobile-First</span>
+      <span class="badge bdk">🆓 Freemium</span>
+    </div>
+  </div>
+  <div class="team">
+    Gabriel Dias Peixoto · Gabriel Leineker Wolff · João Adolfo Bonato Maldonado<br>
+    Vinicius Stadler Ferreira · Vitor Henrique Camillo<br>
+    <span style="color:var(--text-d);font-size:10px">Universidade Positivo · Engenharia de Software &amp; Computação · 2026</span>
+  </div>
+</div>
+
+<!-- ─── SLIDE 2: PROBLEMA ─── -->
+<div class="s" data-n="2">
+  <div class="dots"></div>
+  <div class="glow gk" style="width:400px;height:400px;top:-120px;right:-60px"></div>
+  <div class="box">
+    <div class="eye">O Problema</div>
+    <div class="h2">Onde está o rolê <span class="grad">de hoje?</span></div>
+    <div class="cards4">
+      <div class="card ck">
+        <span class="cico">📵</span>
+        <div class="ctit">O Facebook perdeu a Gen Z</div>
+        <div class="cbod">3 em cada 4 jovens querem abandonar o Facebook — e os eventos foram junto</div>
+      </div>
+      <div class="card cp">
+        <span class="cico">🗂️</span>
+        <div class="ctit">Informação fragmentada</div>
+        <div class="cbod">Eventos espalhados entre WhatsApp, Instagram e Telegram sem nenhuma centralização</div>
+      </div>
+      <div class="card ca">
+        <span class="cico">🗺️</span>
+        <div class="ctit">Sem contexto geográfico</div>
+        <div class="cbod">Não existe forma fácil de ver o que está acontecendo <b>perto de você agora</b></div>
+      </div>
+      <div class="card">
+        <span class="cico">🎟️</span>
+        <div class="ctit">Sympla e Eventbrite ignoram você</div>
+        <div class="cbod">Focam em grandes eventos com ingresso — o churrasquinho e o rolê espontâneo ficam de fora</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── SLIDE 3: MERCADO ─── -->
+<div class="s" data-n="3">
+  <div class="dots"></div>
+  <div class="glow ga" style="width:380px;height:380px;bottom:-80px;left:-60px"></div>
+  <div class="box">
+    <div class="eye">Oportunidade de Mercado</div>
+    <div class="two" style="align-items:flex-start">
+      <div>
+        <div class="bstat grad-ap">+105%</div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:15px;color:var(--text-m);margin-top:10px;line-height:1.55">crescimento do setor de<br>eventos brasileiro pós-pandemia</div>
+        <div style="font-size:11px;color:var(--text-d);margin-top:6px">Associação Brasileira dos Promotores de Eventos · 2024</div>
+      </div>
+      <div class="stat-items">
+        <div class="si cp">
+          <span class="si-ico">🎯</span>
+          <div class="si-tit">Gen Z quer reconexão presencial</div>
+          <div class="si-bod">Após anos de isolamento, o público jovem busca ativamente eventos e experiências ao vivo</div>
+        </div>
+        <div class="si ck">
+          <span class="si-ico">🇧🇷</span>
+          <div class="si-tit">Zero solução dedicada no Brasil</div>
+          <div class="si-bod">Nenhuma plataforma brasileira combina descoberta de eventos + geolocalização + rede social</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── SLIDE 4: SOLUÇÃO ─── -->
+<div class="s" data-n="4">
+  <div class="dots"></div>
+  <div class="glow gp" style="width:500px;height:500px;top:50%;left:50%;transform:translate(-50%,-50%);opacity:.07"></div>
+  <div class="box center">
+    <div class="eye">A Solução</div>
+    <div class="h2">Conheça o <span class="grad">Conectaí</span></div>
+    <div class="body" style="max-width:640px;margin:14px auto 0">Uma rede social <b>mobile-first</b> onde você <b>descobre, cria e compartilha eventos</b> com geolocalização em tempo real e conexões sociais — tudo na palma da mão.</div>
+    <div class="cards3">
+      <div class="card cp" style="text-align:left">
+        <span class="cico">📍</span>
+        <div class="ctit">Descubra</div>
+        <div class="cbod">Veja eventos próximos a você em tempo real, no mapa interativo</div>
+      </div>
+      <div class="card ck" style="text-align:left">
+        <span class="cico">👥</span>
+        <div class="ctit">Conecte-se</div>
+        <div class="cbod">Siga amigos e descubra o que sua rede está curtindo essa semana</div>
+      </div>
+      <div class="card ca" style="text-align:left">
+        <span class="cico">🎉</span>
+        <div class="ctit">Crie</div>
+        <div class="cbod">Do show ao churrasquinho — qualquer um pode criar um evento em segundos</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── SLIDE 5: MAPA ─── -->
+<div class="s" data-n="5">
+  <div class="dots"></div>
+  <div class="glow gp" style="width:380px;height:380px;bottom:-80px;right:-60px"></div>
+  <div class="rdot" style="top:20%;right:11%"><div class="c"></div><div class="r"></div><div class="r r2"></div></div>
+  <div class="rdot" style="top:54%;right:22%"><div class="c" style="background:var(--pink);width:6px;height:6px"></div><div class="r" style="border-color:var(--pink);width:6px;height:6px;animation-delay:.4s"></div></div>
+  <div class="box">
+    <div class="eye">Feature 01 — Mapa de Eventos</div>
+    <div class="h3">Veja o que está <span class="grad">rolando perto de você</span> — agora</div>
+    <div class="body" style="margin-bottom:22px">Abra o mapa e enxergue todos os eventos da sua região em tempo real. Quanto mais gente confirma presença, mais o ponto "esquenta" no mapa de calor.</div>
+    <div class="fbar"><span class="fi">🗺️</span><div class="ft"><b>Mapa interativo</b> com marcadores de eventos em tempo real</div></div>
+    <div class="fbar"><span class="fi">🔥</span><div class="ft"><b>Mapa de calor</b> — veja onde a galera está se concentrando</div></div>
+    <div class="fbar"><span class="fi">🔍</span><div class="ft"><b>Filtros</b> por categoria, data, distância e cidade</div></div>
+    <div class="fbar"><span class="fi">📌</span><div class="ft"><b>Clique no marcador</b> e veja todos os detalhes do evento</div></div>
+  </div>
+</div>
+
+<!-- ─── SLIDE 6: FEED ─── -->
+<div class="s" data-n="6">
+  <div class="dots"></div>
+  <div class="glow gk" style="width:360px;height:360px;top:-80px;left:-50px"></div>
+  <div class="box">
+    <div class="eye">Feature 02 — Feed Social</div>
+    <div class="h3">Seu feed sabe o que você<br><span class="grad">quer antes de você</span></div>
+    <div class="body" style="margin-bottom:22px">O feed combina o que seus amigos estão curtindo com os eventos mais próximos de você. Quanto mais você usa, mais personalizado ele fica.</div>
+    <div class="fbar"><span class="fi">💬</span><div class="ft">Veja eventos que <b>amigos confirmaram</b> ou demonstraram interesse</div></div>
+    <div class="fbar"><span class="fi">❤️</span><div class="ft"><b>Curta, comente</b> e reaja a eventos direto no feed</div></div>
+    <div class="fbar"><span class="fi">🎯</span><div class="ft">Recomendações baseadas nos seus <b>interesses e localização</b></div></div>
+    <div class="fbar"><span class="fi">🔄</span><div class="ft">Feed <b>atualizado em tempo real</b> conforme novas confirmações chegam</div></div>
+  </div>
+</div>
+
+<!-- ─── SLIDE 7: CRIAÇÃO ─── -->
+<div class="s" data-n="7">
+  <div class="dots"></div>
+  <div class="glow ga" style="width:340px;height:340px;bottom:-60px;right:-40px"></div>
+  <div class="box">
+    <div class="eye">Feature 03 — Criação de Eventos</div>
+    <div class="h3">Do show ao churrasquinho —<br><span class="grad">qualquer um pode criar</span></div>
+    <div class="body" style="margin-bottom:22px">Você não precisa ser promoter. Em menos de 3 toques, seu rolê está publicado para os amigos ou para o mundo todo.</div>
+    <div class="fbar"><span class="fi">✏️</span><div class="ft"><b>Crie em segundos</b> com título, foto, data e local</div></div>
+    <div class="fbar"><span class="fi">🔒</span><div class="ft"><b>Público ou privado</b> — você decide quem pode ver</div></div>
+    <div class="fbar"><span class="fi">📸</span><div class="ft"><b>Upload de fotos</b> e imagens para deixar o evento com a sua cara</div></div>
+    <div class="fbar"><span class="fi">🔁</span><div class="ft">Usuários <b>Premium</b> criam eventos recorrentes automaticamente</div></div>
+  </div>
+</div>
+
+<!-- ─── SLIDE 8: REDE SOCIAL ─── -->
+<div class="s" data-n="8">
+  <div class="dots"></div>
+  <div class="glow gp" style="width:380px;height:380px;top:50%;left:-120px;transform:translateY(-50%)"></div>
+  <div class="box">
+    <div class="eye">Feature 04 — Rede Social</div>
+    <div class="h3">Siga amigos, descubra <span class="grad">comunidades</span></div>
+    <div class="body" style="margin-bottom:22px">O Conectaí tem um sistema social completo — siga pessoas, vire amigo quando alguém te segue de volta e veja os eventos que seu círculo está frequentando.</div>
+    <div class="cards2">
+      <div class="card cp"><span class="cico">👤</span><div class="ctit">Perfis completos</div><div class="cbod">Foto, bio e histórico dos eventos que você frequentou</div></div>
+      <div class="card ck"><span class="cico">➕</span><div class="ctit">Seguir e ser seguido</div><div class="cbod">Siga amigos e organizadores de eventos que você curte</div></div>
+      <div class="card ca"><span class="cico">🤝</span><div class="ctit">Amizade automática</div><div class="cbod">Seguimento mútuo = amizade. Simples assim</div></div>
+      <div class="card cg"><span class="cico">🛡️</span><div class="ctit">Privacidade total</div><div class="cbod">Bloqueio, moderação de conteúdo e controle de visibilidade</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── SLIDE 9: COMPARTILHAMENTO ─── -->
+<div class="s" data-n="9">
+  <div class="dots"></div>
+  <div class="glow gk" style="width:300px;height:300px;top:-50px;right:80px;opacity:.07"></div>
+  <div class="box">
+    <div class="eye">Feature 05 — Compartilhamento</div>
+    <div class="h3">Espalha o rolê <span class="grad">para a galera</span></div>
+    <div class="body" style="margin-bottom:22px">Cada evento tem um link único. Compartilhe com dois toques — direto no WhatsApp, Instagram Stories ou no próprio feed do Conectaí.</div>
+    <div class="cards2">
+      <div class="card cg"><span class="cico">🔗</span><div class="ctit">Link único por evento</div><div class="cbod">Preview card automático gerado para qualquer link compartilhado</div></div>
+      <div class="card ca"><span class="cico">💚</span><div class="ctit">WhatsApp direto</div><div class="cbod">Compartilhe para grupos e contatos em um toque</div></div>
+      <div class="card ck"><span class="cico">📱</span><div class="ctit">Instagram Stories</div><div class="cbod">Cards visuais automáticos prontos para o Story</div></div>
+      <div class="card cp"><span class="cico">🔁</span><div class="ctit">Repostar no feed</div><div class="cbod">Compartilhe eventos de amigos direto no seu feed do Conectaí</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── SLIDE 10: NEGÓCIO ─── -->
+<div class="s" data-n="10">
+  <div class="dots"></div>
+  <div class="glow gp" style="width:420px;height:420px;bottom:-100px;left:50%;transform:translateX(-50%);opacity:.08"></div>
+  <div class="box">
+    <div class="eye">Modelo de Negócio</div>
+    <div class="h3">Grátis para entrar. <span class="grad">Premium para quem quer mais.</span></div>
+    <div class="two" style="margin-top:22px;gap:20px;align-items:stretch">
+      <div class="plan">
+        <div class="ptit">🆓 Gratuito</div>
+        <div class="pprice" style="color:var(--text-m);font-size:18px">Sempre grátis</div>
+        <ul class="pfeat">
+          <li><span>✅</span> Criar e participar de eventos ilimitados</li>
+          <li><span>✅</span> Acesso ao mapa e feed social</li>
+          <li><span>✅</span> Busca e filtros completos</li>
+          <li><span>✅</span> Seguir amigos e organizadores</li>
+          <li><span>✅</span> Compartilhamento via WhatsApp e link</li>
+          <li><span>✅</span> Notificações de eventos e amigos</li>
+        </ul>
+      </div>
+      <div class="plan pro">
+        <div class="ptit">⭐ Premium</div>
+        <div class="pprice">Assinatura mensal</div>
+        <ul class="pfeat">
+          <li><span>📊</span> <b>Estatísticas detalhadas</b> dos seus eventos</li>
+          <li><span>🚀</span> <b>Destaque no feed</b> para mais visibilidade</li>
+          <li><span>🔁</span> <b>Eventos recorrentes</b> automáticos</li>
+          <li><span>🎧</span> <b>Suporte prioritário</b></li>
+          <li><span>🏷️</span> <b>Badge verificado</b> no perfil</li>
+          <li><span>📈</span> <b>Análises avançadas</b> de público</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── SLIDE 11: COMPETITIVO ─── -->
+<div class="s" data-n="11">
+  <div class="dots"></div>
+  <div class="glow gp" style="width:340px;height:340px;top:-80px;right:-50px;opacity:.07"></div>
+  <div class="box">
+    <div class="eye">Posicionamento Competitivo</div>
+    <div class="h3">Por que o Conectaí e <span class="grad">não os outros?</span></div>
+    <table class="ctable">
+      <thead>
+        <tr>
+          <th>Funcionalidade</th>
+          <th>Sympla / Eventbrite</th>
+          <th>Facebook Eventos</th>
+          <th class="hl">✦ Conectaí</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Geolocalização em tempo real</td><td><span class="cx">✗</span></td><td><span class="cx">✗</span></td><td class="hl"><span class="ck2">✓</span></td></tr>
+        <tr><td>Eventos espontâneos e de pequeno porte</td><td><span class="cx">✗</span></td><td><span class="cx">✗</span></td><td class="hl"><span class="ck2">✓</span></td></tr>
+        <tr><td>Rede social nativa integrada</td><td><span class="cx">✗</span></td><td><span class="ck2">✓</span></td><td class="hl"><span class="ck2">✓</span></td></tr>
+        <tr><td>Mobile-first para Geração Z</td><td><span class="cx">✗</span></td><td><span class="cx">✗</span></td><td class="hl"><span class="ck2">✓</span></td></tr>
+        <tr><td>Freemium sem taxa de ingresso</td><td><span class="cx">✗</span></td><td><span class="ck2">✓</span></td><td class="hl"><span class="ck2">✓</span></td></tr>
+        <tr><td>100% focado no mercado brasileiro</td><td><span class="cx">✗</span></td><td><span class="cx">✗</span></td><td class="hl"><span class="ck2">✓</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ─── SLIDE 12: ENCERRAMENTO ─── -->
+<div class="s" data-n="12">
+  <div class="dots"></div>
+  <div class="glow gp" style="width:440px;height:440px;top:20%;left:-100px"></div>
+  <div class="glow gk" style="width:300px;height:300px;bottom:5%;right:-40px"></div>
+  <div class="rdot" style="top:28%;right:12%"><div class="c"></div><div class="r"></div><div class="r r2"></div></div>
+  <div class="rdot" style="top:65%;right:24%"><div class="c" style="background:var(--amber)"></div><div class="r" style="border-color:var(--amber);animation-delay:.4s"></div></div>
+  <div class="box">
+    <div class="eye">Visão de Futuro</div>
+    <div class="qblock"><p>"O rolê não espera.<br>O Conectaí também não."</p></div>
+    <div class="road">
+      <div class="ri"><div class="ricon">🚀</div><div><div class="ritit">Lançamento público</div><div class="risub">App disponível na App Store e Google Play</div></div></div>
+      <div class="ri"><div class="ricon">🤝</div><div><div class="ritit">Parcerias locais</div><div class="risub">Produtores de eventos como parceiros estratégicos</div></div></div>
+      <div class="ri"><div class="ricon">📊</div><div><div class="ritit">Anúncios nativos</div><div class="risub">Sistema de promoção para organizadores</div></div></div>
+      <div class="ri"><div class="ricon">🌎</div><div><div class="ritit">Expansão nacional</div><div class="risub">Das capitais para cada cidade do Brasil</div></div></div>
+    </div>
+    <div class="div"></div>
+    <div class="tbadges">
+      <span class="badge bdp">129 endpoints no backend</span>
+      <span class="badge bda">856 testes de integração</span>
+      <span class="badge bdg">82,69% cobertura de código</span>
+      <span class="badge bdk">0% taxa de erro nos testes de carga</span>
+    </div>
+  </div>
+</div>
+
+</div><!-- /deck -->
+
+<script>
+const total=12;let cur=1,busy=false;
+const pbar=document.getElementById('pbar');
+const counter=document.getElementById('counter');
+const prev=document.getElementById('prev');
+const next=document.getElementById('next');
+function slide(n){return document.querySelector('.s[data-n="'+n+'"]')}
+function upd(){
+  pbar.style.width=(cur/total*100)+'%';
+  counter.textContent=cur+' / '+total;
+  prev.disabled=(cur===1);
+  next.disabled=(cur===total);
+}
+function go(d){
+  if(busy)return;
+  const nx=cur+d;
+  if(nx<1||nx>total)return;
+  busy=true;
+  const cs=slide(cur);const ns=slide(nx);
+  ns.style.transition='none';
+  ns.style.transform='translateX('+(d>0?50:-50)+'px)';
+  ns.style.opacity='0';
+  ns.classList.remove('on','out');
+  ns.offsetHeight;
+  cs.style.transition='opacity .42s ease,transform .42s ease';
+  cs.style.transform='translateX('+(d>0?-50:50)+'px)';
+  cs.style.opacity='0';
+  ns.style.transition='opacity .42s ease,transform .42s ease';
+  setTimeout(()=>{ns.style.transform='translateX(0)';ns.style.opacity='1'},16);
+  setTimeout(()=>{
+    cs.classList.remove('on');cs.style.transform='';cs.style.opacity='';cs.style.transition='';
+    ns.classList.add('on');ns.style.transform='';ns.style.opacity='';ns.style.transition='';
+    cur=nx;upd();busy=false;
+  },450);
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' '){e.preventDefault();go(1)}
+  else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault();go(-1)}
+});
+document.getElementById('deck').addEventListener('click',e=>{if(!e.target.closest('.nav'))go(1)});
+upd();
+</script>
+</body>
+</html>
