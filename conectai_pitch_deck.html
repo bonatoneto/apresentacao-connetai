@@ -186,6 +186,66 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 
 /* ── SOLUTION LOGO ── */
 .sol-wrap{text-align:center;padding:0 0 20px}
+
+/* ── MOBILE / RESPONSIVE ── */
+@media (max-width:768px){
+  .s{padding:62px 18px 88px;flex-direction:column;align-items:stretch;justify-content:flex-start;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .box{max-width:100%;margin:auto 0}
+  .center .box{margin:auto 0}
+
+  .nav{top:auto;bottom:18px;transform:none;width:46px;height:46px;font-size:18px}
+  #prev{left:18px}#next{right:18px}
+  #counter{top:16px;bottom:auto;right:18px}
+
+  .eye{font-size:13px;margin-bottom:12px}
+  .body{font-size:17px;line-height:1.55;margin-top:14px}
+
+  .cards2,.cards3,.cards4,.two,.road{grid-template-columns:1fr;gap:12px;margin-top:20px}
+  .card{padding:16px 18px}
+  .cico{font-size:32px;margin-bottom:8px}
+  .ctit{font-size:18px;margin-bottom:6px}
+  .cbod{font-size:15px;line-height:1.45}
+
+  .fbar{padding:13px 15px;gap:13px;margin-bottom:9px}
+  .fbar .fi{font-size:24px}
+  .fbar .ft{font-size:16px;line-height:1.35}
+
+  .two{gap:24px}
+  .bstat{font-size:64px}
+
+  .plan{padding:20px}
+  .ptit{font-size:20px}
+  .pprice{font-size:24px;margin-bottom:14px}
+  .pfeat{gap:9px}
+  .pfeat li{font-size:16px;gap:10px}
+
+  .ctable{font-size:12.5px;margin-top:18px}
+  .ctable th{font-size:11px;padding:8px 6px}
+  .ctable td{padding:8px 6px}
+
+  .badge{font-size:12.5px;padding:6px 11px}
+
+  .qblock{margin:18px 0;padding-left:16px}
+  .qblock p{font-size:22px}
+
+  .ri{padding:13px 0!important;border-left:none!important;border-bottom:1px solid var(--border)!important}
+  .ri:last-child{border-bottom:none!important}
+  .ricon{width:40px;height:40px;font-size:18px}
+  .ritit{font-size:17px}
+  .risub{font-size:14px}
+
+  .si{padding:16px 18px}
+  .si .si-ico{font-size:26px;margin-bottom:8px}
+  .si .si-tit{font-size:17px;margin-bottom:6px}
+  .si .si-bod{font-size:15px}
+
+  .tbadges{gap:9px;margin-top:16px}
+
+  .cover-name{font-size:clamp(46px,13vw,74px);letter-spacing:-1.5px}
+  .cover-sub{font-size:18px;margin-top:14px;max-width:100%}
+  .cover-badges{gap:8px;margin-top:20px}
+  .team{position:static;left:auto;bottom:auto;margin-top:32px;font-size:12px;width:100%}
+}
 </style>
 </head>
 <body>
@@ -523,7 +583,24 @@ document.addEventListener('keydown',e=>{
   if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' '){e.preventDefault();go(1)}
   else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault();go(-1)}
 });
-document.getElementById('deck').addEventListener('click',e=>{if(!e.target.closest('.nav'))go(1)});
+const deck=document.getElementById('deck');
+let lastTouch=0;
+deck.addEventListener('click',e=>{
+  if(Date.now()-lastTouch<600)return;        /* ignora o "click" sintetico apos toque */
+  if(!e.target.closest('.nav'))go(1);
+});
+/* ── SWIPE (mobile) ── */
+let txStart=0,tyStart=0;
+deck.addEventListener('touchstart',e=>{
+  const t=e.changedTouches[0];txStart=t.clientX;tyStart=t.clientY;
+},{passive:true});
+deck.addEventListener('touchend',e=>{
+  lastTouch=Date.now();
+  const t=e.changedTouches[0];
+  const dx=t.clientX-txStart,dy=t.clientY-tyStart;
+  if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy)){go(dx<0?1:-1)}      /* swipe horizontal navega */
+  else if(Math.abs(dx)<10&&Math.abs(dy)<10&&!t.target.closest('.nav'))go(1); /* tap simples avanca */
+},{passive:true});
 upd();
 </script>
 </body>
